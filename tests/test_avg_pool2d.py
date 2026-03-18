@@ -4,10 +4,11 @@ import torch.nn.functional as F
 
 import ntops
 from tests.skippers import skip_if_cuda_not_available
+from tests.utils import DEFAULT_DEVICE
 
 
 @skip_if_cuda_not_available
-@pytest.mark.parametrize("device", ("cuda",))
+@pytest.mark.parametrize("device", (DEFAULT_DEVICE,))
 @pytest.mark.parametrize(
     "dtype, rtol, atol", ((torch.float32, 1e-5, 1e-5), (torch.float16, 1e-3, 1e-3))
 )

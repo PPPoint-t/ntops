@@ -4,6 +4,17 @@ import random
 import torch
 
 
+def _get_default_device():
+    if torch.cuda.is_available():
+        return "cuda"
+    elif hasattr(torch, "npu") and torch.npu.is_available():
+        return "npu"
+    return "cpu"
+
+
+DEFAULT_DEVICE = _get_default_device()
+
+
 def generate_arguments(use_float=True):
     arguments = []
     if use_float:
@@ -13,7 +24,7 @@ def generate_arguments(use_float=True):
 
     for ndim in range(1, 5):
         for dtype in dtype_arr:
-            device = "cuda"
+            device = DEFAULT_DEVICE
 
             if dtype is torch.float32:
                 atol = 0.001

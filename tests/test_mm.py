@@ -5,13 +5,14 @@ import torch
 
 import ntops
 from tests.skippers import skip_if_cuda_not_available
+from tests.utils import DEFAULT_DEVICE
 
 
 def generate_arguments():
     arguments = []
 
     for dtype in (torch.float32, torch.float16):
-        device = "cuda"
+        device = DEFAULT_DEVICE
 
         if dtype is torch.float32:
             atol = 0.001

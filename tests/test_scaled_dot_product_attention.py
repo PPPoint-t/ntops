@@ -10,6 +10,7 @@ from torch.nn.attention.bias import causal_lower_right
 import ntops
 from ntops.kernels.scaled_dot_product_attention import CausalVariant
 from tests.skippers import skip_if_cuda_not_available
+from tests.utils import DEFAULT_DEVICE
 
 
 def generate_arguments():
@@ -22,7 +23,7 @@ def generate_arguments():
     is_causal_values = (False, True)
     scales = (None, random.uniform(0.05, 0.5))
     dtypes = (torch.float32, torch.float16)
-    devices = ("cuda",)
+    devices = (DEFAULT_DEVICE,)
     with_kv_cache_values = (False, True)
     causal_variants = (None, CausalVariant.LOWER_RIGHT, CausalVariant.UPPER_LEFT)
 

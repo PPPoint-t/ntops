@@ -3,6 +3,7 @@ import torch
 
 import ntops
 from tests.skippers import skip_if_cuda_not_available
+from tests.utils import DEFAULT_DEVICE
 
 
 def _torch_rotary_position_embedding(input, sin_table, cos_table, interleaved=True):
@@ -46,7 +47,7 @@ def _generate_sin_and_cos_tables(
 
 
 @skip_if_cuda_not_available
-@pytest.mark.parametrize("device", ("cuda",))
+@pytest.mark.parametrize("device", (DEFAULT_DEVICE,))
 @pytest.mark.parametrize(
     "dtype, rtol, atol", ((torch.float32, 0, 0.001), (torch.float16, 0.001, 0.001))
 )

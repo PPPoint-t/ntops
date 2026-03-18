@@ -4,10 +4,11 @@ import torch.nn.functional as F
 
 import ntops
 from tests.skippers import skip_if_cuda_not_available
+from tests.utils import DEFAULT_DEVICE
 
 
 @skip_if_cuda_not_available
-@pytest.mark.parametrize("device", ("cuda",))
+@pytest.mark.parametrize("device", (DEFAULT_DEVICE,))
 @pytest.mark.parametrize("dtype", (torch.float32, torch.float16))
 @pytest.mark.parametrize("ceil_mode", (False,))
 @pytest.mark.parametrize("dilation", (1, 2, (2, 3)))
