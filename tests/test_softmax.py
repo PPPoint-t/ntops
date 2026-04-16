@@ -13,7 +13,10 @@ from tests.utils import generate_arguments
 def test_softmax(shape, dtype, device, rtol, atol):
     input = torch.randn(shape, dtype=dtype, device=device)
     dim = random.randint(0, input.ndim - 1)
-    dtype = random.choice([torch.float16, torch.float32, torch.float64])
+    candidate_dtypes = [torch.float16, torch.float32]
+    if input.device.type != "npu":
+        candidate_dtypes.append(torch.float64)
+    dtype = random.choice(candidate_dtypes)
 
     ninetoothed_output = ntops.torch.softmax(input, dim, dtype)
     reference_output = torch.nn.functional.softmax(input, dim=dim, dtype=dtype)
