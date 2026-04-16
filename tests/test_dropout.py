@@ -33,4 +33,5 @@ def test_dropout(shape, dtype, device, rtol, atol):
     assert torch.allclose(
         ninetoothed_output[ninetoothed_output != 0],
         input[ninetoothed_output != 0] / (1 - p),
+        rtol=rtol, atol=atol
     )
