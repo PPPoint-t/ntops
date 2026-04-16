@@ -174,14 +174,31 @@ def test_scaled_dot_product_attention(
             attn_mask = causal_lower_right(query.shape[-2], key.shape[-2])
             is_causal = False
 
+    reference_key = key_cloned
+    reference_value = value_cloned
+    reference_enable_gqa = enable_gqa
+    # torch_npu reference limitation:
+    # float additive attn_mask with q-heads != kv-heads may fail on dim=1.
+    # Work around by materializing KV head expansion and disabling GQA in reference.
+    if (
+        query.device.type == "npu"
+        and attn_mask_type is torch.float32
+        and key_cloned.shape[1] != query.shape[1]
+    ):
+        assert query.shape[1] % key_cloned.shape[1] == 0
+        group_size = query.shape[1] // key_cloned.shape[1]
+        reference_key = key_cloned.repeat_interleave(group_size, dim=1)
+        reference_value = value_cloned.repeat_interleave(group_size, dim=1)
+        reference_enable_gqa = False
+
     reference_output = F.scaled_dot_product_attention(
         query,
-        key_cloned,
-        value_cloned,
+        reference_key,
+        reference_value,
         attn_mask=attn_mask,
         is_causal=is_causal,
         scale=scale,
-        enable_gqa=enable_gqa,
+        enable_gqa=reference_enable_gqa,
     )
 
     assert torch.allclose(ninetoothed_output, reference_output, rtol=rtol, atol=atol)
