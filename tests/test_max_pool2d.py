@@ -20,12 +20,19 @@ def test_max_pool2d(
     n, c, h, w, kernel_size, stride, padding, dilation, ceil_mode, dtype, device
 ):
     padding_ = padding
+    dilation_ = dilation
 
     if isinstance(padding_, int):
         padding_ = (padding_, padding_)
 
+    if isinstance(dilation_, int):
+        dilation_ = (dilation_, dilation_)
+
     if padding_[0] > kernel_size[0] / 2 or padding_[1] > kernel_size[1] / 2:
         pytest.skip(reason="Invalid padding.")
+
+    if device == "npu" and dilation_ != (1, 1):
+        pytest.skip(reason="torch_npu max_pool2d currently only supports dilation=1.")
 
     input = torch.randn((n, c, h, w), dtype=dtype, device=device)
 
